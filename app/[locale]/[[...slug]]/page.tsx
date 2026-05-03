@@ -108,6 +108,54 @@ const guides = [
   }
 ] as const;
 
+const heroSlides = [
+  {
+    image: listings[0].image,
+    label: { en: "Weekend highlight", "zh-HK": "週末焦點" },
+    title: { en: "A cleaner, calmer board for local stories and offers.", "zh-HK": "以更乾淨、更平靜的方式呈現社區故事與優惠。" },
+    copy: { en: "Use the homepage banner to rotate the most important community highlights, seasonal campaigns, and editorial picks.", "zh-HK": "首頁橫幅可輪播最重要的社區焦點、季節企劃及編輯精選。" },
+    primaryHref: "/all",
+    primaryLabel: { en: "Browse all updates", "zh-HK": "查看全部更新" },
+    secondaryHref: "/apply",
+    secondaryLabel: { en: "Become a partner", "zh-HK": "成為合作夥伴" },
+    stats: [
+      { value: "4", label: { en: "Community categories", "zh-HK": "社區分類" } },
+      { value: "2", label: { en: "Languages", "zh-HK": "語言版本" } },
+      { value: "24/7", label: { en: "Browse anytime", "zh-HK": "隨時瀏覽" } }
+    ]
+  },
+  {
+    image: listings[1].image,
+    label: { en: "Editorial focus", "zh-HK": "內容焦點" },
+    title: { en: "Promote featured moments without cluttering the page.", "zh-HK": "在不堆砌版面的情況下放大重點內容。" },
+    copy: { en: "This carousel can feature time-sensitive passes, neighborhood launches, or campaign-driven stories at the top of the site.", "zh-HK": "這個輪播可用來展示限時通行證、社區新消息或重點活動企劃。" },
+    primaryHref: "/today",
+    primaryLabel: { en: "See what is live today", "zh-HK": "查看今天內容" },
+    secondaryHref: "/guides",
+    secondaryLabel: { en: "Read the guides", "zh-HK": "閱讀指南" },
+    stats: [
+      { value: "3", label: { en: "Hero slides", "zh-HK": "輪播頁數" } },
+      { value: "1", label: { en: "Simple direction", "zh-HK": "清晰方向" } },
+      { value: "100%", label: { en: "White-based UI", "zh-HK": "白色基調" } }
+    ]
+  },
+  {
+    image: listings[3].image,
+    label: { en: "Community rhythm", "zh-HK": "社區節奏" },
+    title: { en: "Keep the experience elegant, readable, and easy to scan.", "zh-HK": "讓整體體驗更優雅、可讀、易於瀏覽。" },
+    copy: { en: "The new tone uses white backgrounds, black typography, and a soft green accent to feel quieter and more premium.", "zh-HK": "新版調性改用白底、黑字及柔和綠色點綴，整體更安靜也更精緻。" },
+    primaryHref: "/food-drink",
+    primaryLabel: { en: "Explore categories", "zh-HK": "探索分類" },
+    secondaryHref: "/search",
+    secondaryLabel: { en: "Use search", "zh-HK": "前往搜尋" },
+    stats: [
+      { value: "#b1c5a4", label: { en: "Accent tone", "zh-HK": "輔助色" } },
+      { value: "0", label: { en: "Search bar in header", "zh-HK": "頁首搜尋欄" } },
+      { value: "1", label: { en: "Cleaner look", "zh-HK": "更簡潔外觀" } }
+    ]
+  }
+] as const;
+
 function t(copy: Copy, locale: Locale) {
   return copy[locale];
 }
@@ -122,19 +170,16 @@ function nav(locale: Locale, current: string) {
     ["search", locale === "en" ? "Search" : "搜尋"],
     ["apply", locale === "en" ? "Apply" : "合作申請"],
     ["account", locale === "en" ? "Account" : "帳戶"],
-    ["admin", locale === "en" ? "Admin" : "管理"]
+    ["admin", locale === "en" ? "Admin" : "管理" }
   ];
 
   return (
-    <div className="panel shell" style={{ marginTop: 24, padding: 20 }}>
-      <div style={{ display: "flex", gap: 18, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
-        <div>
-          <Link href={`/${locale}`} className="card-title" style={{ fontSize: 32 }}>Harbor</Link>
-          <div className="muted" style={{ marginTop: 6 }}>
-            {locale === "en" ? "A browseable board for local offers, guides, and trusted community partners." : "可瀏覽的本地優惠、指南及社區合作夥伴平台。"}
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+    <header className="shell site-header">
+      <div className="site-header-bar panel">
+        <Link href={`/${locale}`} className="site-logo">
+          Harbor
+        </Link>
+        <nav className="menu-pill">
           {items.map(([href, label]) => {
             const key = `/${locale}${href ? `/${href}` : ""}`;
             const active = current === href;
@@ -144,16 +189,16 @@ function nav(locale: Locale, current: string) {
               </Link>
             );
           })}
-        </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        </nav>
+        <div className="lang-switch">
           {locales.map((code) => (
-            <Link key={code} href={`/${code}`} className={`header-link${code === locale ? " active" : ""}`}>
+            <Link key={code} href={`/${code}`} className={`lang-link${code === locale ? " active" : ""}`}>
               {code}
             </Link>
           ))}
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 
@@ -194,6 +239,49 @@ function section(eyebrow: string, title: string, copy: string) {
   );
 }
 
+function homeCarousel(locale: Locale) {
+  return (
+    <section className="shell spacer-lg">
+      <div className="panel hero-carousel">
+        <div className="hero-track">
+          {heroSlides.map((slide) => (
+            <div key={slide.title.en} className="hero-slide">
+              <div className="hero-copy">
+                <div className="hero-kicker">{t(slide.label, locale)}</div>
+                <h1 className="hero-title">{t(slide.title, locale)}</h1>
+                <p className="muted" style={{ fontSize: 18 }}>{t(slide.copy, locale)}</p>
+                <div className="hero-actions">
+                  <Link href={`/${locale}${slide.primaryHref}`} className="button primary">
+                    {t(slide.primaryLabel, locale)}
+                  </Link>
+                  <Link href={`/${locale}${slide.secondaryHref}`} className="button secondary">
+                    {t(slide.secondaryLabel, locale)}
+                  </Link>
+                </div>
+              </div>
+              <div className="hero-image" style={{ backgroundImage: `url(${slide.image})` }}>
+                <div className="hero-stats">
+                  {slide.stats.map((stat) => (
+                    <div key={stat.value} className="stat">
+                      <strong>{stat.value}</strong>
+                      <span className="muted">{t(stat.label, locale)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="carousel-dots" aria-hidden="true">
+          <span className="carousel-dot" />
+          <span className="carousel-dot" />
+          <span className="carousel-dot" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function listingCard(locale: Locale, item: (typeof listings)[number]) {
   const partner = partners.find((candidate) => candidate.slug === item.partner);
   const category = categories.find((candidate) => candidate.slug === item.category);
@@ -231,7 +319,7 @@ function searchBar(locale: Locale, currentQuery = "", currentCategory = "") {
         <option value="">{locale === "en" ? "All categories" : "全部分類"}</option>
         {categories.map((item) => <option key={item.slug} value={item.slug}>{t(item.name, locale)}</option>)}
       </select>
-      <button style={{ background: "#0f4c5c", color: "white" }} type="submit">{locale === "en" ? "Search" : "搜尋"}</button>
+      <button style={{ background: "#111111", color: "white" }} type="submit">{locale === "en" ? "Search" : "搜尋"}</button>
     </form>
   );
 }
@@ -311,29 +399,7 @@ export default async function LocaleRouter({
       {nav(locale, current)}
       {!current && (
         <>
-          <section className="shell spacer-lg">
-            <div className="panel" style={{ padding: 36, display: "grid", gap: 30, gridTemplateColumns: "1.1fr 0.9fr" }}>
-              <div>
-                <div className="chip">{locale === "en" ? "Bilingual local platform" : "雙語本地平台"}</div>
-                <h1 className="hero-title">{locale === "en" ? "A modern community board for offers, events, and trusted neighborhood picks." : "為社區而設的現代平台，整合優惠、活動與可信精選。"}</h1>
-                <p className="muted" style={{ fontSize: 18 }}>{locale === "en" ? "This deployment keeps the browseable editorial structure you liked while using your own branding and content model." : "此部署保留你喜歡的瀏覽式編輯結構，同時使用你自己的品牌及內容模型。"}</p>
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
-                  <Link href={`/${locale}/today`} className="button primary">{locale === "en" ? "Browse today" : "查看今日"}</Link>
-                  <Link href={`/${locale}/apply`} className="button secondary">{locale === "en" ? "Partner with us" : "申請合作"}</Link>
-                </div>
-              </div>
-              <div className="hero-stats">
-                {[
-                  ["4", locale === "en" ? "Community categories" : "社區分類"],
-                  ["2", locale === "en" ? "Languages from launch" : "啟用語言"],
-                  ["9", locale === "en" ? "Core route groups" : "主要路由"],
-                  ["1", locale === "en" ? "Ready for Vercel" : "可部署到 Vercel"]
-                ].map(([value, label]) => (
-                  <div key={label} className="stat"><strong>{value}</strong><span className="muted">{label}</span></div>
-                ))}
-              </div>
-            </div>
-          </section>
+          {homeCarousel(locale)}
 
           <section className="shell spacer-xl">
             {section(locale === "en" ? "Browse by category" : "按分類瀏覽", locale === "en" ? "Designed for quick scanning." : "為快速瀏覽而設。", locale === "en" ? "Use these category landing pages as the main discovery pathways for your community." : "這些分類頁面可作為社區主要的探索入口。")}
@@ -370,7 +436,7 @@ export default async function LocaleRouter({
 
       {current === "guides" && !slug[1] && <section className="shell spacer-lg">{section(locale === "en" ? "Editorial guides" : "編輯指南", locale === "en" ? "Long-form context alongside short-form discovery." : "在即時內容之外補充長文脈絡。", locale === "en" ? "Use this area for explainers, comparisons, and evergreen local resources." : "此區適合教學、比較及長青本地資源內容。")}<div className="grid cards-2 spacer-lg">{guides.map((item) => guideCard(locale, item))}</div></section>}
 
-      {current === "apply" && <section className="shell spacer-lg">{section(locale === "en" ? "Partner pipeline" : "合作管道", locale === "en" ? "Collect new community submissions with structure." : "以結構化方式收集新的社區合作申請。", locale === "en" ? "This launch-ready intake form can later post to Supabase or another backend." : "這個可上線的收件表單之後可接駁至 Supabase 或其他後端。")}<form className="panel grid-2 spacer-lg" style={{ padding: 24 }}><label><div className="muted">{locale === "en" ? "Organization" : "機構名稱"}</div><input /></label><label><div className="muted">{locale === "en" ? "Contact name" : "聯絡人"}</div><input /></label><label><div className="muted">Email</div><input /></label><label><div className="muted">{locale === "en" ? "Phone" : "電話"}</div><input /></label><label><div className="muted">{locale === "en" ? "Category" : "類別"}</div><select>{categories.map((item) => <option key={item.slug}>{t(item.name, locale)}</option>)}</select></label><label className="full"><div className="muted">{locale === "en" ? "Notes" : "補充資料"}</div><textarea rows={6} /></label><div className="full" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", flexWrap: "wrap" }}><div className="muted">{locale === "en" ? "Connect this form to your backend when you are ready." : "準備好之後可把此表單接駁至你的後端。"}</div><button style={{ background: "#d96c45", color: "white" }} type="button">{locale === "en" ? "Submit application" : "提交申請"}</button></div></form></section>}
+      {current === "apply" && <section className="shell spacer-lg">{section(locale === "en" ? "Partner pipeline" : "合作管道", locale === "en" ? "Collect new community submissions with structure." : "以結構化方式收集新的社區合作申請。", locale === "en" ? "This launch-ready intake form can later post to Supabase or another backend." : "這個可上線的收件表單之後可接駁至 Supabase 或其他後端。")}<form className="panel grid-2 spacer-lg" style={{ padding: 24 }}><label><div className="muted">{locale === "en" ? "Organization" : "機構名稱"}</div><input /></label><label><div className="muted">{locale === "en" ? "Contact name" : "聯絡人"}</div><input /></label><label><div className="muted">Email</div><input /></label><label><div className="muted">{locale === "en" ? "Phone" : "電話"}</div><input /></label><label><div className="muted">{locale === "en" ? "Category" : "類別"}</div><select>{categories.map((item) => <option key={item.slug}>{t(item.name, locale)}</option>)}</select></label><label className="full"><div className="muted">{locale === "en" ? "Notes" : "補充資料"}</div><textarea rows={6} /></label><div className="full" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", flexWrap: "wrap" }}><div className="muted">{locale === "en" ? "Connect this form to your backend when you are ready." : "準備好之後可把此表單接駁至你的後端。"}</div><button style={{ background: "#111111", color: "white" }} type="button">{locale === "en" ? "Submit application" : "提交申請"}</button></div></form></section>}
 
       {current === "account" && !slug[1] && <section className="shell spacer-lg"><div className="panel" style={{ padding: 28, display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}><div><div className="chip">{locale === "en" ? "Account" : "帳戶"}</div><div className="section-title">{locale === "en" ? "Member hub" : "會員中心"}</div><p className="muted">{locale === "en" ? "A basic member area for saved items, profile settings, and future alerts." : "基本會員區，適合作為收藏、個人設定及未來通知功能的入口。"}</p></div><div className="sidebar"><div className="meta">resident@harbor.test</div><div style={{ display: "grid", gap: 12, marginTop: 18 }}><Link href={`/${locale}/account/saved`} className="button secondary">{locale === "en" ? "View saved items" : "查看收藏項目"}</Link><button className="button secondary" type="button">{locale === "en" ? "Connect authentication later" : "之後接駁登入功能"}</button></div></div></div></section>}
 
@@ -383,7 +449,7 @@ export default async function LocaleRouter({
         if (!item) return notFound();
         const partner = partners.find((entry) => entry.slug === item.partner);
         const category = categories.find((entry) => entry.slug === item.category);
-        return <section className="shell spacer-lg"><div className="panel"><div className="media" style={{ height: 320, backgroundImage: `url(${item.image})`, borderRadius: "28px 28px 0 0" }} /><div style={{ padding: 28, display: "grid", gap: 24, gridTemplateColumns: "1.2fr 0.8fr" }}><div><div className="chip">{category ? t(category.name, locale) : item.category}</div><div className="hero-title" style={{ fontSize: "3.5rem" }}>{t(item.title, locale)}</div><p className="muted" style={{ fontSize: 18 }}>{t(item.summary, locale)}</p><p className="muted">{t(item.body, locale)}</p></div><aside className="sidebar"><div className="meta">{locale === "en" ? "Dates" : "日期"}</div><p>{item.dates}</p><div className="meta">{locale === "en" ? "Tags" : "標籤"}</div><p>{item.tags}</p><div className="meta">{locale === "en" ? "Partner" : "合作夥伴"}</div>{partner ? <Link href={`/${locale}/partner/${partner.slug}`}>{partner.name}</Link> : null}<div style={{ marginTop: 18 }}><button style={{ background: "#0f4c5c", color: "white" }} type="button">{locale === "en" ? "Save item" : "收藏項目"}</button></div></aside></div></div></section>;
+        return <section className="shell spacer-lg"><div className="panel"><div className="media" style={{ height: 320, backgroundImage: `url(${item.image})`, borderRadius: "28px 28px 0 0" }} /><div style={{ padding: 28, display: "grid", gap: 24, gridTemplateColumns: "1.2fr 0.8fr" }}><div><div className="chip">{category ? t(category.name, locale) : item.category}</div><div className="hero-title" style={{ fontSize: "3.5rem" }}>{t(item.title, locale)}</div><p className="muted" style={{ fontSize: 18 }}>{t(item.summary, locale)}</p><p className="muted">{t(item.body, locale)}</p></div><aside className="sidebar"><div className="meta">{locale === "en" ? "Dates" : "日期"}</div><p>{item.dates}</p><div className="meta">{locale === "en" ? "Tags" : "標籤"}</div><p>{item.tags}</p><div className="meta">{locale === "en" ? "Partner" : "合作夥伴"}</div>{partner ? <Link href={`/${locale}/partner/${partner.slug}`}>{partner.name}</Link> : null}<div style={{ marginTop: 18 }}><button style={{ background: "#111111", color: "white" }} type="button">{locale === "en" ? "Save item" : "收藏項目"}</button></div></aside></div></div></section>;
       })()}
 
       {current === "partner" && slug[1] && (() => {
